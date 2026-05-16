@@ -1,9 +1,5 @@
 import { useState } from 'react'
-
-const MODELS = {
-  gemini: ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash'],
-  openai: ['gpt-4o-mini', 'gpt-4o']
-}
+import { MODELS_BY_PROVIDER as MODELS } from '../lib/storage.js'
 
 export default function Settings({ settings, onSave }) {
   const [s, setS] = useState(settings)

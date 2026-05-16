@@ -88,17 +88,32 @@ export async function deleteLead(id) {
 // ---- Impostazioni AI (solo localStorage, mai nel codice) ----
 const SETTINGS_KEY = 'leadscan_ai_settings'
 
+// Single source of truth per i modelli supportati per provider.
+export const MODELS_BY_PROVIDER = {
+  gemini: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-3-flash-preview'],
+  openai: ['gpt-4o-mini', 'gpt-4o']
+}
+
+const DEFAULT_SETTINGS = {
+  provider: 'gemini',
+  apiKey: '',
+  model: MODELS_BY_PROVIDER.gemini[0]
+}
+
+function migrate(s) {
+  const provider = MODELS_BY_PROVIDER[s.provider] ? s.provider : 'gemini'
+  const allowed = MODELS_BY_PROVIDER[provider]
+  const model = allowed.includes(s.model) ? s.model : allowed[0]
+  return { ...s, provider, model }
+}
+
 export function getSettings() {
   try {
-    return (
-      JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null') || {
-        provider: 'gemini',
-        apiKey: '',
-        model: 'gemini-1.5-flash'
-      }
-    )
+    const raw = JSON.parse(localStorage.getItem(SETTINGS_KEY) || 'null')
+    if (!raw) return { ...DEFAULT_SETTINGS }
+    return migrate({ ...DEFAULT_SETTINGS, ...raw })
   } catch {
-    return { provider: 'gemini', apiKey: '', model: 'gemini-1.5-flash' }
+    return { ...DEFAULT_SETTINGS }
   }
 }
 

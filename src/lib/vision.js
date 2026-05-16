@@ -97,7 +97,7 @@ function splitDataUrl(dataUrl) {
 }
 
 async function callGemini({ apiKey, model, base64, mimeType }) {
-  const m = model || 'gemini-1.5-flash'
+  const m = model || 'gemini-2.5-flash'
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(
     apiKey
   )}`
