@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #0a0c10;
+  color: #e8eaed;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* safe-area iPhone (notch / home indicator) */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overscroll-behavior-y: none;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+textarea,
+select {
+  font-size: 16px; /* evita lo zoom automatico su iOS al focus */
+}
+
+@layer components {
+  .field-label {
+    @apply text-[11px] uppercase tracking-wider text-ink-500 font-semibold mb-1.5 block;
+  }
+  .field-input {
+    @apply w-full bg-ink-700 border border-ink-600 rounded-xl px-4 py-3
+      text-[15px] text-zinc-100 placeholder-zinc-600
+      focus:outline-none focus:border-amber-glow/70 focus:ring-1 focus:ring-amber-glow/40
+      transition-colors;
+  }
+  .btn-primary {
+    @apply w-full bg-amber-glow text-ink-900 font-display font-bold text-lg
+      rounded-2xl py-4 active:scale-[0.98] transition-transform
+      shadow-lg shadow-amber-glow/20 disabled:opacity-40 disabled:active:scale-100;
+  }
+  .btn-ghost {
+    @apply w-full border border-ink-500 text-zinc-300 font-semibold
+      rounded-2xl py-3.5 active:scale-[0.98] transition-transform;
+  }
+  .nav-tab {
+    @apply flex-1 flex flex-col items-center gap-1 py-2 text-[10px] font-semibold
+      uppercase tracking-wide transition-colors;
+  }
+}
+
+/* scrollbar discreta */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
