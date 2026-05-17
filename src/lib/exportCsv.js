@@ -1,6 +1,6 @@
 // exportCsv.js — esporta tutti i lead in un CSV con colonne ordinate.
 
-const COLUMNS = [
+export const COLUMNS = [
   ['createdAt', 'Data'],
   ['nome', 'Nome'],
   ['cognome', 'Cognome'],
@@ -35,11 +35,15 @@ function fmtDate(iso) {
   if (!iso) return ''
   try {
     const d = new Date(iso)
-    return d.toLocaleString('it-IT')
+    if (isNaN(d.getTime())) return iso
+    const pad = (n) => String(n).padStart(2, '0')
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
   } catch {
     return iso
   }
 }
+
+export { fmtDate }
 
 export function leadsToCsv(leads) {
   const header = COLUMNS.map(([, label]) => csvCell(label)).join(';')

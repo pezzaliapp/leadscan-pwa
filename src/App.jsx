@@ -13,6 +13,8 @@ import {
   saveSettings
 } from './lib/storage.js'
 import { downloadCsv } from './lib/exportCsv.js'
+import { downloadXlsx } from './lib/exportXlsx.js'
+import { downloadPdf } from './lib/exportPdf.js'
 
 const TABS = [
   ['scan', 'Scansione', '◎'],
@@ -125,6 +127,8 @@ export default function App() {
           <LeadList
             leads={leads}
             onExport={() => downloadCsv(leads)}
+            onExportXlsx={() => downloadXlsx(leads)}
+            onExportPdf={() => downloadPdf(leads)}
             onDelete={handleDelete}
             onOpen={openLead}
           />

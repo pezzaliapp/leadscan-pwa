@@ -17,29 +17,56 @@ function matchLead(lead, q) {
   return hay.includes(q.toLowerCase())
 }
 
-export default function LeadList({ leads, onExport, onDelete, onOpen }) {
+export default function LeadList({
+  leads,
+  onExport,
+  onExportXlsx,
+  onExportPdf,
+  onDelete,
+  onOpen
+}) {
   const [q, setQ] = useState('')
   const filtered = useMemo(
     () => leads.filter((l) => matchLead(l, q)),
     [leads, q]
   )
 
+  const exportBtn =
+    'bg-amber-glow text-ink-900 font-display font-bold text-sm rounded-xl px-4 py-2.5 active:scale-95 transition-transform disabled:opacity-40'
+  const disabled = leads.length === 0
+
   return (
     <div className="space-y-5">
-      <div className="flex items-end justify-between gap-3">
+      <div className="space-y-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-zinc-100">
             Lead salvati
           </h1>
           <p className="text-sm text-ink-500 mt-1">{leads.length} totali</p>
         </div>
-        <button
-          className="bg-amber-glow text-ink-900 font-display font-bold text-sm rounded-xl px-4 py-2.5 active:scale-95 transition-transform disabled:opacity-40"
-          onClick={onExport}
-          disabled={leads.length === 0}
-        >
-          Esporta CSV
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            className={exportBtn}
+            onClick={onExport}
+            disabled={disabled}
+          >
+            Esporta CSV
+          </button>
+          <button
+            className={exportBtn}
+            onClick={onExportXlsx}
+            disabled={disabled}
+          >
+            Esporta Excel
+          </button>
+          <button
+            className={exportBtn}
+            onClick={onExportPdf}
+            disabled={disabled}
+          >
+            Esporta PDF
+          </button>
+        </div>
       </div>
 
       <input
