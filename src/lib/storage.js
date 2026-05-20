@@ -89,9 +89,31 @@ export async function deleteLead(id) {
 const SETTINGS_KEY = 'leadscan_ai_settings'
 
 // Single source of truth per i modelli supportati per provider.
+// Lista aggiornata maggio 2026 — solo modelli del FREE TIER Gemini.
+// Ordine = preferenza consigliata per LeadScan (OCR biglietti + note penna).
 export const MODELS_BY_PROVIDER = {
-  gemini: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-3-flash-preview'],
+  gemini: [
+    'gemini-2.5-flash-lite',         // default: gratis, 15 RPM, 1500/giorno, raro 503
+    'gemini-3.1-flash-lite-preview', // nuovo (GA maggio 2026), velocissimo, poco congestionato
+    'gemini-2.5-flash',              // qualita piu alta, ma piu 503 perche molto richiesto
+    'gemini-3-flash-preview'         // preview, qualita top ma quote ridotte
+  ],
   openai: ['gpt-4o-mini', 'gpt-4o']
+}
+
+// Modello di fallback automatico quando il principale da 503/overload.
+// Sempre scelto un modello DIVERSO da quello primario.
+export const FALLBACK_MODEL = {
+  gemini: {
+    'gemini-2.5-flash-lite': 'gemini-3.1-flash-lite-preview',
+    'gemini-3.1-flash-lite-preview': 'gemini-2.5-flash-lite',
+    'gemini-2.5-flash': 'gemini-2.5-flash-lite',
+    'gemini-3-flash-preview': 'gemini-2.5-flash-lite'
+  },
+  openai: {
+    'gpt-4o-mini': 'gpt-4o',
+    'gpt-4o': 'gpt-4o-mini'
+  }
 }
 
 const DEFAULT_SETTINGS = {
@@ -103,6 +125,8 @@ const DEFAULT_SETTINGS = {
 function migrate(s) {
   const provider = MODELS_BY_PROVIDER[s.provider] ? s.provider : 'gemini'
   const allowed = MODELS_BY_PROVIDER[provider]
+  // Migrazione: se il modello salvato non e piu in lista (es. vecchio
+  // "gemini-2.5-pro" non piu free tier), si torna al default sicuro.
   const model = allowed.includes(s.model) ? s.model : allowed[0]
   return { ...s, provider, model }
 }
